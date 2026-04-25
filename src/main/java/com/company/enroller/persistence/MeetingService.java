@@ -52,6 +52,25 @@ public class MeetingService {
         connector.getSession().merge(meeting);
         transaction.commit();
     }
-
+    public boolean removeParticipant(Meeting meeting, Participant participant) {
+        if (!meeting.getParticipants().contains(participant)) {
+            return false;
+        }
+        Transaction tx = connector.getSession().beginTransaction();
+        meeting.removeParticipant(participant);
+        connector.getSession().merge(meeting);
+        tx.commit();
+        return true;
+    }
+    public boolean addParticipant(Meeting meeting, Participant participant) {
+        if (!meeting.getParticipants().contains(participant)) {
+            return false;
+        }
+        Transaction tx = connector.getSession().beginTransaction();
+        meeting.addParticipant(participant);
+        connector.getSession().merge(meeting);
+        tx.commit();
+        return true;
+    }
 
 }
