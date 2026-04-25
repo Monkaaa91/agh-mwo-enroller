@@ -1,6 +1,5 @@
 package com.company.enroller.model;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,8 +70,9 @@ public class Meeting {
 		this.participants.remove(participant);
 	}
 
-	public Collection<Participant> getParticipants() {
-		return participants;
-	}
+
+
+
+
 
 }

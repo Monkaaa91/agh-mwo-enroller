@@ -30,4 +30,7 @@ public class Participant {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+
+
 }

@@ -1,17 +1,26 @@
 package com.company.enroller.persistence;
 
-import java.util.Collection;
-
+import com.company.enroller.model.Meeting;
+import com.company.enroller.model.Participant;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
-import com.company.enroller.model.Meeting;
+import java.util.Collection;
 
 @Component("meetingService")
+@RestController
+@RequestMapping("/participants")
 public class MeetingService {
+    @Autowired
+    ParticipantService participantService;
 
-	DatabaseConnector connector;
+
+    DatabaseConnector connector;
 
 	public MeetingService() {
 		connector = DatabaseConnector.getInstance();
@@ -23,4 +32,24 @@ public class MeetingService {
 		return query.list();
 	}
 
+
+    public Meeting findById(Long id) {
+        String hql = "FROM Meeting WHERE id = :id";
+        Query query = connector.getSession().createQuery(hql);
+        query.setParameter("id", id);
+        return (Meeting) query.uniqueResult();
+
+    }
+
+    public void add(Meeting meeting) {
+        connector.getSession().save(meeting);
+    }
+    public void delete(Meeting meeting) {
+        connector.getSession().delete(meeting);
+    }
+    public void  update(Meeting meeting) {
+        Transaction transaction = connector.getSession().beginTransaction();
+        connector.getSession().merge(meeting);
+        transaction.commit();
+    }
 }
