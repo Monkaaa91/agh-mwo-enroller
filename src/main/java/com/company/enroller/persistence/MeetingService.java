@@ -52,4 +52,15 @@ public class MeetingService {
         connector.getSession().merge(meeting);
         transaction.commit();
     }
+
+    public boolean addParticipant(Meeting meeting, Participant participant) {
+        if (meeting.getParticipants().contains(participant)) {
+            return false;
+        }
+        Transaction transaction = connector.getSession().beginTransaction();
+        meeting.addParticipant(participant);
+        connector.getSession().merge(meeting);
+        transaction.commit();
+        return true;
+    }
 }

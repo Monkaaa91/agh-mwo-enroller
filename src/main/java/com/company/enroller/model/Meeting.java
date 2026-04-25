@@ -71,8 +71,7 @@ public class Meeting {
 	}
 
 
-
-
-
-
+    public Set<Participant> getParticipants() {
+        return participants;
+    }
 }

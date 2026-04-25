@@ -16,12 +16,14 @@ import com.company.enroller.model.Participant;
 import com.company.enroller.persistence.ParticipantService;
 
 @RestController
-@RequestMapping("/meeting")
+@RequestMapping("/meetings")
 
 public class MeetingRestController {
     @Qualifier("meetingService")
     @Autowired
     MeetingService meetingService;
+    @Autowired
+    ParticipantService participantService;
 
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -68,7 +70,36 @@ public class MeetingRestController {
         meetingService.update(meeting);
         return new ResponseEntity(HttpStatus.CREATED);
     }
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") Long meetingId) {
+        Meeting meeting = meetingService.findById(meetingId);
+        if (meeting == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
+    }
+    @PostMapping("/{id}/participants")
+    public ResponseEntity<?> addParticipantToMeeting(
+            @PathVariable("id") Long meetingId,
+            @RequestBody Participant participant) {
 
+        Meeting meeting = meetingService.findById(meetingId);
+        if (meeting == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Participant existingParticipant = participantService.findByLogin(participant.getLogin());
+        if (existingParticipant == null) {
+            return new ResponseEntity<>("Participant not registered", HttpStatus.BAD_REQUEST);
+        }
+
+        boolean added = meetingService.addParticipant(meeting, existingParticipant);
+        if (!added) {
+            return new ResponseEntity<>("Participant already in meeting", HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 
