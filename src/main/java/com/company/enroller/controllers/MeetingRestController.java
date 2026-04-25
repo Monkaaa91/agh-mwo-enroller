@@ -78,28 +78,7 @@ public class MeetingRestController {
         }
         return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
     }
-    @PostMapping("/{id}/participants")
-    public ResponseEntity<?> addParticipantToMeeting(
-            @PathVariable("id") Long meetingId,
-            @RequestBody Participant participant) {
 
-        Meeting meeting = meetingService.findById(meetingId);
-        if (meeting == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Participant existingParticipant = participantService.findByLogin(participant.getLogin());
-        if (existingParticipant == null) {
-            return new ResponseEntity<>("Participant not registered", HttpStatus.BAD_REQUEST);
-        }
-
-        boolean added = meetingService.addParticipant(meeting, existingParticipant);
-        if (!added) {
-            return new ResponseEntity<>("Participant already in meeting", HttpStatus.CONFLICT);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 
 
