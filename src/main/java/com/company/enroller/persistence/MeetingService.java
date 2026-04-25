@@ -5,8 +5,6 @@ import com.company.enroller.model.Participant;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,25 +50,14 @@ public class MeetingService {
         connector.getSession().merge(meeting);
         transaction.commit();
     }
-    public boolean removeParticipant(Meeting meeting, Participant participant) {
+    public void addParticipant(Meeting meeting, Participant participant) {
         if (!meeting.getParticipants().contains(participant)) {
-            return false;
-        }
-        Transaction tx = connector.getSession().beginTransaction();
-        meeting.removeParticipant(participant);
-        connector.getSession().merge(meeting);
-        tx.commit();
-        return true;
-    }
-    public boolean addParticipant(Meeting meeting, Participant participant) {
-        if (!meeting.getParticipants().contains(participant)) {
-            return false;
+            return;
         }
         Transaction tx = connector.getSession().beginTransaction();
         meeting.addParticipant(participant);
         connector.getSession().merge(meeting);
         tx.commit();
-        return true;
     }
 
 }

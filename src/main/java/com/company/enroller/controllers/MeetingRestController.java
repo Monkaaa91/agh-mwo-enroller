@@ -1,11 +1,9 @@
 package com.company.enroller.controllers;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.company.enroller.model.Meeting;
 import com.company.enroller.persistence.MeetingService;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -71,31 +69,32 @@ public class MeetingRestController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @RequestMapping(value = "/{id}/participants", method =  RequestMethod.GET)
-    public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") Long meetingId) {
-        Meeting meeting = meetingService.findById(meetingId);
+    public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") Long id) {
+        Meeting meeting = meetingService.findById(id);
         if (meeting == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
     }
-    @RequestMapping(value = "/id/participants", method = RequestMethod.POST)
-    public ResponseEntity<?> addParticipant(@PathVariable("id") Long meetingId, @RequestBody Participant participant) {
-        Meeting meeting = meetingService.findById(meetingId);
+    @PostMapping("/{id}/participants")
+    public ResponseEntity<?> addParticipant(@PathVariable("id") Long id, @RequestBody Participant participant) {
+
+        Meeting meeting = meetingService.findById(id);
         if (meeting == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Participant existingParticipant = participantService.findByLogin(participant.getLogin());
-        if (existingParticipant == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        meeting.addParticipant(existingParticipant);
-        meetingService.update(meeting);
-        return new ResponseEntity<>( HttpStatus.OK);
-
+        Participant existing = participantService.findByLogin(participant.getLogin());
+        if (existing == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-
+        meetingService.addParticipant(meeting, existing);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    }
+
+
+
 
 
 
