@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.transaction.Transaction;
 
+import com.company.enroller.persistence.DatabaseConnector;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -24,7 +26,7 @@ public class Meeting {
 	@Column
 	private String date;
 
-	@JsonIgnore
+
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "meeting_participant", joinColumns = { @JoinColumn(name = "meeting_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "participant_login") })
@@ -70,8 +72,8 @@ public class Meeting {
 		this.participants.remove(participant);
 	}
 
-
     public Set<Participant> getParticipants() {
         return participants;
     }
+
 }

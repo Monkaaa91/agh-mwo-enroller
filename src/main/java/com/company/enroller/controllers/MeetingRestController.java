@@ -78,10 +78,10 @@ public class MeetingRestController {
         return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
     }
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
-    public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") String title, @RequestBody Map<String, String> json) {
+    public ResponseEntity<?> addParticipantToMeeting(@PathVariable long id, @RequestBody Map<String, String> json) {
         String login = json.get("login");
 
-        Meeting meeting = meetingService.findByTitle(title);
+        Meeting meeting = meetingService.findById(id);
         Participant participant = participantService.findByLogin(login);
 
         if (meeting == null || participant == null) {
@@ -93,7 +93,21 @@ public class MeetingRestController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @PathVariable String login) {
+        Meeting meeting = meetingService.findById(id);
+        Participant participant = participantService.findByLogin(login);
+
+        if (meeting == null || participant == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        meeting.removeParticipant(participant);
+        meetingService.update(meeting);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+}
 
 
 

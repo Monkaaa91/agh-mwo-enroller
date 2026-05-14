@@ -64,11 +64,7 @@ public class MeetingService {
         tx.commit();
     }
 
-    public Meeting findByTitle(String title) {
-        String hql = "FROM Meeting WHERE title = :title";
-        return (Meeting) connector.getSession()
-                .createQuery(hql)
-                .setParameter("title", title)
-                .uniqueResult();
+    public Meeting findById(long id) {
+        return connector.getSession().get(Meeting.class, id);
     }
 }
