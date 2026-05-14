@@ -30,6 +30,7 @@ public class Meeting {
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "meeting_participant", joinColumns = { @JoinColumn(name = "meeting_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "participant_login") })
+	@JsonIgnore
 	Set<Participant> participants = new HashSet<>();
 
 	public long getId() {
