@@ -1,6 +1,7 @@
 package com.company.enroller.controllers;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.company.enroller.model.Meeting;
 import com.company.enroller.persistence.MeetingService;
@@ -76,20 +77,21 @@ public class MeetingRestController {
         }
         return new ResponseEntity<>(meeting.getParticipants(), HttpStatus.OK);
     }
-    @PostMapping("/{id}/participants")
-    public ResponseEntity<?> addParticipant(@PathVariable("id") Long id, @RequestBody Participant participant) {
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
+    public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") String title, @RequestBody Map<String, String> json) {
+        String login = json.get("login");
 
-        Meeting meeting = meetingService.findById(id);
-        if (meeting == null) {
+        Meeting meeting = meetingService.findByTitle(title);
+        Participant participant = participantService.findByLogin(login);
+
+        if (meeting == null || participant == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Participant existing = participantService.findByLogin(participant.getLogin());
-        if (existing == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
 
-        meetingService.addParticipant(meeting, existing);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        meeting.addParticipant(participant);
+        meetingService.update(meeting);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     }
 
