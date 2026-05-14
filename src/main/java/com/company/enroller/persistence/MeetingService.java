@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @Component("meetingService")
 @RestController
@@ -66,5 +67,13 @@ public class MeetingService {
 
     public Meeting findById(long id) {
         return connector.getSession().get(Meeting.class, id);
+    }
+
+    public List filterByTitle(String title) {
+        String hql = "FROM Meeting WHERE title LIKE :title";
+        return connector.getSession()
+                .createQuery(hql)
+                .setParameter("title", "%" + title + "%")
+                .list();
     }
 }

@@ -68,7 +68,6 @@ public class Meeting {
 	public void addParticipant(Participant participant) {
 		this.participants.add(participant);
 	}
-
 	public void removeParticipant(Participant participant) {
 		this.participants.remove(participant);
 	}

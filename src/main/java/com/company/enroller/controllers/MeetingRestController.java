@@ -107,6 +107,16 @@ public class MeetingRestController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<?> getMeetings(@RequestParam(value = "filter", defaultValue = "") String filter) {
+        Collection<Meeting> meetings;
+        if (filter.isEmpty()) {
+            meetings = meetingService.getAll();
+        } else {
+            meetings = meetingService.filterByTitle(filter);
+        }
+        return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+    }
 }
 
 
