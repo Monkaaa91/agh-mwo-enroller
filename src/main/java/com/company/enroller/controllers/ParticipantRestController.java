@@ -22,8 +22,15 @@ public class ParticipantRestController {
 
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getParticipants() {
-        Collection<Participant> participants = participantService.getAll();
+    public ResponseEntity<?> getParticipants(@RequestParam(value = "filter", required = false) String loginFilter) {
+        Collection<Participant> participants;
+
+        if (loginFilter != null && !loginFilter.isEmpty()) {
+            participants = participantService.findByFilter(loginFilter);
+        } else {
+            participants = participantService.getAll();
+        }
+
         return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
     }
 

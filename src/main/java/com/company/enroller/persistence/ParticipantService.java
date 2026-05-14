@@ -59,4 +59,12 @@ public class ParticipantService {
         return query.list();
     }
 
-}
+        public Collection<Participant> findByFilter(String loginFilter) {
+            String hql = "FROM Participant WHERE login LIKE :filter";
+            return connector.getSession()
+                    .createQuery(hql, Participant.class)
+                    .setParameter("filter", "%" + loginFilter + "%")
+                    .list();
+        }
+    }
+
